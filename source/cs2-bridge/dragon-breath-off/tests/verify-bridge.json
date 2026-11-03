@@ -1,0 +1,14 @@
+[
+  {"t":"cmd","c":"datapack list enabled"},
+  {"t":"cmd","c":"execute at @p run summon minecraft:area_effect_cloud ~ ~64 ~ {Tags:[\"mccs_breath_probe\",\"mccs_breath_probe_dragon\"],Duration:200,WaitTime:200,Radius:0.5f,custom_particle:{type:\"minecraft:dragon_breath\"}}"},
+  {"t":"cmd","c":"execute at @p run summon minecraft:area_effect_cloud ~ ~64 ~ {Tags:[\"mccs_breath_probe\",\"mccs_breath_probe_potion\"],Duration:200,WaitTime:200,Radius:0.5f}"},
+  {"t":"cmd","c":"execute at @p run summon minecraft:dragon_fireball ~ ~64 ~ {Tags:[\"mccs_breath_probe\",\"mccs_breath_probe_fireball\"],Motion:[0.0d,0.0d,0.0d],acceleration_power:0.0d}"},
+  {"wait_ms":1000},
+  {"t":"cmd","c":"execute unless entity @e[tag=mccs_breath_probe_dragon] run say [dragon-breath-test] cloud removed PASS"},
+  {"t":"cmd","c":"execute if entity @e[tag=mccs_breath_probe_dragon] run say [dragon-breath-test] cloud removed FAIL"},
+  {"t":"cmd","c":"execute unless entity @e[tag=mccs_breath_probe_fireball] run say [dragon-breath-test] fireball removed PASS"},
+  {"t":"cmd","c":"execute if entity @e[tag=mccs_breath_probe_fireball] run say [dragon-breath-test] fireball removed FAIL"},
+  {"t":"cmd","c":"execute if entity @e[tag=mccs_breath_probe_potion] run say [dragon-breath-test] normal cloud retained PASS"},
+  {"t":"cmd","c":"execute unless entity @e[tag=mccs_breath_probe_potion] run say [dragon-breath-test] normal cloud retained FAIL"},
+  {"t":"cmd","c":"kill @e[tag=mccs_breath_probe]"}
+]

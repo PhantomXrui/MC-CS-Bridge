@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><AllowUnsafeBlocks>true</AllowUnsafeBlocks><AssemblyName>MinecraftBridge</AssemblyName></PropertyGroup>
+  <PropertyGroup>
+    <CounterStrikeSharpApiDir Condition="'$(CounterStrikeSharpApiDir)' == ''">$(MSBuildThisFileDirectory)../../../games/Counter-Strike 2/csgo/addons/counterstrikesharp/api</CounterStrikeSharpApiDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CounterStrikeSharp.API"><HintPath>$(CounterStrikeSharpApiDir)/CounterStrikeSharp.API.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions"><HintPath>$(CounterStrikeSharpApiDir)/Microsoft.Extensions.Logging.Abstractions.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>
