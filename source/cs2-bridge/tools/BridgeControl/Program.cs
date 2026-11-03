@@ -1,7 +1,9 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-const string root=@"D:\MC-CS-Bridge";
+var root=Environment.GetEnvironmentVariable("MCCS_ROOT");
+if(string.IsNullOrWhiteSpace(root)||!Path.IsPathFullyQualified(root))
+    throw new InvalidOperationException("Set MCCS_ROOT to an absolute local bridge workspace path.");
 if(args.Length<1||args.Length>2)throw new ArgumentException("Pass a JSON command path and optional response capture path.");
 var token=File.ReadAllText(Path.Combine(root,"runtime/bridge-token.txt")).Trim();
 using var ws=new ClientWebSocket();ws.Options.SetRequestHeader("Authorization","Bearer "+token);

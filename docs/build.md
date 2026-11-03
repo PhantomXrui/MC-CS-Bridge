@@ -1,5 +1,7 @@
 # 构建与复现
 
+首次换电脑请从 [逐阶段重建手册](reproduce.md) 开始；本文是组件级构建参考。具体功能调用链见 [玩法](features-gameplay.md)、[渲染](features-rendering.md)、[地形](features-terrain.md)。
+
 这份源码的历史开发环境为 Windows x64。它依赖两个游戏、服务端模组 API、Fabric 和 ReShade；游戏文件及私有运行资料不包含在公开源码中。
 
 ## 已记录依赖

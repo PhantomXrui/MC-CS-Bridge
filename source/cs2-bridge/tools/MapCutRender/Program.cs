@@ -20,10 +20,6 @@ namespace MapCutRender;
 /// </summary>
 internal static class Program
 {
-    private const string DefaultSource = @"E:\MC-CS-Bridge\build-cache\inferno-vmdl";
-    private const string DefaultOutput = @"E:\MC-CS-Bridge\build-cache\map-patch-de_inferno\variant\maps\de_inferno\worldnodes";
-    private const string DefaultReport = @"E:\MC-CS-Bridge\build-cache\map-patch-de_inferno\render-cut-report.json";
-    private const string BuildCacheRoot = @"E:\MC-CS-Bridge\build-cache";
     private const float DefaultEpsilon = 0.01f;
 
     // Production Inferno zones: B site, the original hull-free A patch, and the two
@@ -722,9 +718,13 @@ internal static class Program
 
     private static Options ParseOptions(string[] args)
     {
-        var source = DefaultSource;
-        var output = DefaultOutput;
-        var report = DefaultReport;
+        var configuredRoot = Environment.GetEnvironmentVariable("MCCS_ROOT");
+        if (string.IsNullOrWhiteSpace(configuredRoot) || !Path.IsPathFullyQualified(configuredRoot))
+            throw new ArgumentException("Set MCCS_ROOT to an absolute local bridge workspace path.");
+        var root = Path.GetFullPath(configuredRoot);
+        var source = Path.Combine(root, "build-cache", "inferno-vmdl");
+        var output = Path.Combine(root, "build-cache", "map-patch-de_inferno", "variant", "maps", "de_inferno", "worldnodes");
+        var report = Path.Combine(root, "build-cache", "map-patch-de_inferno", "render-cut-report.json");
         var boxes = new List<CutBox>();
         var explicitBoxes = false;
         Vector3? pendingMin = null;
@@ -760,7 +760,7 @@ internal static class Program
                 throw new ArgumentException("--min/--max must be finite");
         CutBox.Validate(boxes);
 
-        return new Options(source, output, report, boxes, epsilon, dryRun);
+        return new Options(root, source, output, report, boxes, epsilon, dryRun);
     }
 
     private static CutBox ParseBox(string text)
@@ -783,13 +783,14 @@ internal static class Program
 
     private static void GuardOutputPath(Options options)
     {
-        var buildCache = Path.GetFullPath(BuildCacheRoot).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+        var buildCacheRoot = Path.Combine(options.Root, "build-cache");
+        var buildCache = Path.GetFullPath(buildCacheRoot).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
         var output = Path.GetFullPath(options.Output);
         var report = Path.GetFullPath(options.Report);
         if (!output.StartsWith(buildCache, StringComparison.OrdinalIgnoreCase) ||
             !report.StartsWith(buildCache, StringComparison.OrdinalIgnoreCase))
-            throw new ArgumentException("output and report paths must stay under " + BuildCacheRoot);
-        var gameRoot = Path.GetFullPath(@"E:\MC-CS-Bridge\games") + Path.DirectorySeparatorChar;
+            throw new ArgumentException("output and report paths must stay under " + buildCacheRoot);
+        var gameRoot = Path.GetFullPath(Path.Combine(options.Root, "games")) + Path.DirectorySeparatorChar;
         if (output.StartsWith(gameRoot, StringComparison.OrdinalIgnoreCase) ||
             report.StartsWith(gameRoot, StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("refusing to write into the game directory");
@@ -798,9 +799,10 @@ internal static class Program
     private static void PrintUsage()
     {
         Console.WriteLine("MapCutRender - degenerate render triangles inside one or more CS2 world-space boxes");
-        Console.WriteLine("  --src <dir>        extracted .vmdl_c directory (default: " + DefaultSource + ")");
-        Console.WriteLine("  --out <dir>        patched resource directory (default: " + DefaultOutput + ")");
-        Console.WriteLine("  --report <file>    JSON report path (default: " + DefaultReport + ")");
+        Console.WriteLine("  MCCS_ROOT         required absolute local workspace path (except --help)");
+        Console.WriteLine("  --src <dir>        extracted .vmdl_c directory (default: MCCS_ROOT/build-cache/inferno-vmdl)");
+        Console.WriteLine("  --out <dir>        patched resources (default: MCCS_ROOT/build-cache/map-patch-de_inferno/variant/maps/de_inferno/worldnodes)");
+        Console.WriteLine("  --report <file>    JSON report (default: MCCS_ROOT/build-cache/map-patch-de_inferno/render-cut-report.json)");
         Console.WriteLine("  --box minx,miny,minz,maxx,maxy,maxz");
         Console.WriteLine("                     add a cut zone; repeat for every zone (may be mixed with --min/--max)");
         Console.WriteLine("  --min x,y,z        cut zone minimum, must be followed by --max (repeatable)");
@@ -812,7 +814,7 @@ internal static class Program
         Console.WriteLine("  when all three POSITION vertices are inside any one zone.");
     }
 
-    private sealed record Options(string Source, string Output, string Report, IReadOnlyList<CutBox> Boxes, float Epsilon, bool DryRun);
+    private sealed record Options(string Root, string Source, string Output, string Report, IReadOnlyList<CutBox> Boxes, float Epsilon, bool DryRun);
 
     private sealed record Segment(int IndexBuffer, int VertexBuffer, int Start, int Count);
 

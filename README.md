@@ -15,13 +15,24 @@
 - 地图离线预切与运行时方块覆盖组成的局部地形破坏实验。
 - F8 本地回放动作：对识别到的原始人物及附件实施压缩、拉伸和旋转显示变换。
 
-## 阅读顺序
+## 具体实现与换电脑复刻
 
-1. `docs/architecture.md`：制作思路、数据流和模块边界。
-2. `docs/build.md`：依赖版本、构建顺序和当前移植限制。
-3. `source/cs2-bridge/plugin/`：CS2 端玩法与同步逻辑。
-4. `source/universal-modder/examples/minecraft-gta5-passthrough/mc/`：Fabric 模组。
-5. `source/cs2-bridge/native/` 与 `shaders/`：ReShade 渲染与合成。
+文档按实际函数和消息链说明每个功能怎么完成，也列出未闭合的流程；不是只提供设计思路。
+
+| 想看什么 | 文档 |
+|---|---|
+| 另一台 Windows 电脑逐步重建 | [新机手册：版本、配置、命令、检查点与故障定位](docs/reproduce.md) |
+| 干员互动、金苹果、小 T、近战、伤害、语音、水印 | [玩法具体实现](docs/features-gameplay.md) |
+| 画面合成、相机、F8、手套/C4 附件、黑影与性能 | [渲染具体实现](docs/features-rendering.md) |
+| 地图碰撞、切坑、物理与渲染、C4 地形联动 | [地形具体实现](docs/features-terrain.md) |
+| 哪些验证能直接运行，哪些会改世界 | [测试工具与结果说明](docs/testing.md) |
+| 让下一次 Codex 少重复排查、减少 token | [Codex 执行与接力清单](docs/codex-handoff.md) |
+| 这次 Codex 实际整理、改动、验证了什么 | [公开整理执行记录](docs/publication-worklog.md) |
+| 整体数据流与组件构建 | [架构](docs/architecture.md) · [构建](docs/build.md) |
+
+源码入口：[CS2 插件](source/cs2-bridge/plugin/)、[MC 模组](source/universal-modder/examples/minecraft-gta5-passthrough/mc/)、[原生渲染](source/cs2-bridge/native/)、[FX](source/cs2-bridge/shaders/)、[工具](tools/)。
+
+当前尚无干净新机端到端验证，不能承诺百分百复刻。手册把缺失的输入、依赖与待验证项列在对应步骤，避免重复摸索。
 
 ## 状态与限制
 
